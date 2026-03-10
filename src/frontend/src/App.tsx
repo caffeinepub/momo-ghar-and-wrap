@@ -1,866 +1,860 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  CheckCircle2,
   ChevronDown,
   Clock,
+  DollarSign,
+  Flame,
+  Leaf,
   MapPin,
-  Menu,
-  MessageCircle,
+  Menu as MenuIcon,
   Phone,
+  Quote,
   Star,
+  Users,
   X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import type { Variants } from "motion/react";
 import { useEffect, useState } from "react";
 
-const PHONE = "+918208118143";
-const WHATSAPP_URL = "https://wa.me/918208118143";
-const MAPS_URL =
-  "https://maps.google.com/?q=Tirupati+Plaza+Deepak+Hospital+Road+Gandhi+Chaman+Old+Jalna+Maharashtra";
+const GOOGLE_MAPS_URL =
+  "https://www.google.com/maps/dir/?api=1&destination=Tirupati+Plaza+Deepak+Hospital+Road+Gandhi+Chaman+Old+Jalna+Maharashtra+431213";
+
+const navLinks = [
+  { label: "Menu", href: "#menu" },
+  { label: "About", href: "#about" },
+  { label: "Reviews", href: "#reviews" },
+  { label: "Contact", href: "#contact" },
+];
 
 const menuItems = [
   {
-    emoji: "🔥",
     name: "Tandoori Momos",
-    desc: "Smoky, chargrilled momos with a fiery tandoor twist",
-    tag: "Best Seller",
-    img: "/assets/generated/menu-tandoori-momos.dim_400x300.jpg",
+    desc: "Smoky, charred perfection with our signature marinade",
+    image: "/assets/generated/tandoori-momos.dim_600x400.jpg",
+    tag: "🔥 Best Seller",
+    gradient: null as string | null,
+    emoji: null as string | null,
   },
   {
-    emoji: "🌶️",
     name: "Schezwan Momos",
-    desc: "Spicy Chinese-style momos with bold schezwan sauce",
-    tag: "Spicy",
-    img: "/assets/generated/menu-schezwan-momos.dim_400x300.jpg",
+    desc: "Fiery schezwan sauce tossed with juicy momos",
+    image: "/assets/generated/schezwan-momos.dim_600x400.jpg",
+    tag: "🌶 Spicy",
+    gradient: null as string | null,
+    emoji: null as string | null,
   },
   {
-    emoji: "🧀",
-    name: "Paneer Momos",
-    desc: "Soft cottage cheese filled momos, mildly spiced",
-    tag: "Veg",
-    img: null,
-  },
-  {
-    emoji: "🌯",
     name: "Afghani Momos Roll",
-    desc: "Creamy afghani-style momos wrapped in a soft roll",
-    tag: "Fan Favorite",
-    img: "/assets/generated/menu-afghani-roll.dim_400x300.jpg",
+    desc: "Creamy afghani sauce in a soft flatbread roll",
+    image: "/assets/generated/afghani-roll.dim_600x400.jpg",
+    tag: "⭐ Fan Fav",
+    gradient: null as string | null,
+    emoji: null as string | null,
   },
   {
-    emoji: "🍕",
-    name: "Pizza Roll",
-    desc: "Italian-inspired roll with cheesy pizza flavors",
-    tag: "Unique",
-    img: null,
-  },
-  {
-    emoji: "🍯",
-    name: "Honey Chilli Momos",
-    desc: "Sweet and spicy crispy momos glazed in honey chilli",
-    tag: "Sweet & Spicy",
-    img: null,
-  },
-  {
-    emoji: "🍟",
     name: "Loaded Cheese Fries",
-    desc: "Crispy fries loaded with melted cheese and toppings",
-    tag: "Indulgent",
-    img: "/assets/generated/menu-loaded-fries.dim_400x300.jpg",
+    desc: "Crispy fries smothered in melted cheese",
+    image: "/assets/generated/cheese-fries.dim_600x400.jpg",
+    tag: "🧀 Indulgent",
+    gradient: null as string | null,
+    emoji: null as string | null,
   },
   {
-    emoji: "🥤",
     name: "Cold Coffee & Mocktails",
-    desc: "Refreshing beverages to pair with your meal",
-    tag: "Cool",
-    img: null,
+    desc: "Refreshing drinks to cool down your spice game",
+    image: "/assets/generated/cold-coffee.dim_600x400.jpg",
+    tag: "❄ Chilled",
+    gradient: null as string | null,
+    emoji: null as string | null,
+  },
+  {
+    name: "Paneer Momos",
+    desc: "Soft, stuffed with spiced cottage cheese filling",
+    image: null as string | null,
+    gradient: "from-orange-900/50 via-amber-800/40 to-yellow-900/50",
+    emoji: "🥟",
+    tag: "🌿 Veg",
+  },
+  {
+    name: "Honey Chilli Momos",
+    desc: "Sweet, spicy, sticky — utterly irresistible",
+    image: null as string | null,
+    gradient: "from-red-900/50 via-orange-800/40 to-amber-900/50",
+    emoji: "🍯",
+    tag: "✨ New",
+  },
+  {
+    name: "Pizza Roll",
+    desc: "Indian-Chinese fusion in every bite",
+    image: null as string | null,
+    gradient: "from-rose-900/50 via-red-800/40 to-orange-900/50",
+    emoji: "🍕",
+    tag: "🔀 Fusion",
   },
 ];
 
 const features = [
-  "Wide Variety of Momos & Wraps",
-  "Freshly Prepared Fast Food",
-  "Affordable Prices",
-  "Cozy Cafe Ambience",
-  "Perfect for Friends & Family",
-  "Quick Service & Takeaway",
+  {
+    icon: Leaf,
+    title: "Fresh Every Day",
+    desc: "All ingredients sourced and prepared fresh daily",
+    color: "text-green-400",
+  },
+  {
+    icon: Flame,
+    title: "Bold Flavors",
+    desc: "Authentic recipes with a modern twist",
+    color: "text-flame",
+  },
+  {
+    icon: DollarSign,
+    title: "Pocket Friendly",
+    desc: "Great taste that won't break the bank",
+    color: "text-amber",
+  },
+  {
+    icon: Users,
+    title: "Cozy Vibe",
+    desc: "Perfect spot to hang out with friends and family",
+    color: "text-blue-400",
+  },
 ];
 
 const reviews = [
   {
+    text: "Best momos in Jalna! The tandoori ones are absolutely divine. I visit every week.",
     name: "Rahul S.",
+    role: "Student",
     rating: 5,
-    text: "Delicious food and amazing taste — must try the tandoori momos! The smoky flavour is unlike anything I've had in Jalna.",
-    date: "2 weeks ago",
+    initials: "RS",
   },
   {
+    text: "The Afghani Roll is a must-try. Super affordable and delicious.",
     name: "Priya M.",
+    role: "Food Lover",
     rating: 5,
-    text: "Great place with unique momo varieties and a nice ambience. Perfect spot to hang out with friends after college!",
-    date: "1 month ago",
+    initials: "PM",
   },
   {
-    name: "Amit K.",
-    rating: 4,
-    text: "Best momos in Jalna! Affordable and super tasty. The honey chilli momos are absolutely addictive. Will be back!",
-    date: "3 weeks ago",
+    text: "Great ambiance, quick service, and amazing food. Perfect hangout spot!",
+    name: "Vikram T.",
+    role: "Regular Customer",
+    rating: 5,
+    initials: "VT",
   },
 ];
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Menu", href: "#menu" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-];
+const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"];
 
-function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          size={size}
-          className={
-            i <= Math.floor(rating)
-              ? "fill-accent text-accent"
-              : "text-muted-foreground"
-          }
-          fill={i <= Math.floor(rating) ? "currentColor" : "none"}
-        />
-      ))}
-    </div>
-  );
-}
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+const stagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12 } },
+};
 
 export default function App() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const year = new Date().getFullYear();
-  const hostname = encodeURIComponent(window.location.hostname);
-
   return (
-    <div className="min-h-screen bg-background text-foreground font-body">
-      {/* NAVBAR */}
+    <div className="min-h-screen bg-background text-foreground font-body overflow-x-hidden">
+      {/* ── NAVBAR ──────────────────────────────────────────────── */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background/95 backdrop-blur-md border-b border-border shadow-md"
+            ? "bg-background/95 backdrop-blur-md border-b border-border shadow-lg"
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <a
-            href="#home"
-            className="font-display font-bold text-lg md:text-xl text-foreground"
-          >
-            <span className="text-gradient-fire">Momo Ghar</span>
-            <span className="text-foreground/80"> & Wrap</span>
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <a href="#hero" className="flex items-center gap-2 shrink-0">
+            <img
+              src="/assets/generated/logo-transparent.dim_300x100.png"
+              alt="Momo Ghar And Wrap"
+              className="h-10 w-auto object-contain"
+            />
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <ul className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                data-ocid="nav.link"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-              asChild
-            >
-              <a href={`tel:${PHONE}`} data-ocid="nav.call_button">
-                <Phone size={14} className="mr-1.5" />
-                Call Now
-              </a>
-            </Button>
-          </nav>
-
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            className="md:hidden p-2 text-foreground"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-
-        {/* Mobile drawer */}
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden bg-card border-b border-border px-4 pb-4"
-            >
-              {navLinks.map((link) => (
+              <li key={link.href}>
                 <a
-                  key={link.href}
                   href={link.href}
-                  data-ocid="nav.link"
-                  onClick={() => setMobileOpen(false)}
-                  className="block py-3 text-base font-medium text-muted-foreground hover:text-foreground border-b border-border/50 last:border-0"
+                  data-ocid={`nav.${link.label.toLowerCase()}.link`}
+                  className="text-sm font-heading font-semibold text-muted-foreground hover:text-flame transition-colors duration-200 tracking-wide uppercase"
                 >
                   {link.label}
                 </a>
-              ))}
-              <a
-                href={`tel:${PHONE}`}
-                className="mt-3 flex items-center gap-2 text-primary font-semibold"
-              >
-                <Phone size={16} />
-                Call Now
-              </a>
+              </li>
+            ))}
+          </ul>
+
+          {/* Desktop CTA */}
+          <a
+            href="tel:+918208118143"
+            data-ocid="nav.call.primary_button"
+            className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-flame text-primary-foreground font-heading font-bold text-sm hover:bg-flame-dark transition-all duration-200 shadow-flame"
+          >
+            <Phone className="w-4 h-4" />
+            Call Now
+          </a>
+
+          {/* Mobile menu toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            data-ocid="nav.mobile.toggle"
+            className="md:hidden p-2 rounded-md text-foreground hover:text-flame transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <MenuIcon className="w-6 h-6" />
+            )}
+          </button>
+        </nav>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="md:hidden bg-card/95 backdrop-blur-md border-b border-border overflow-hidden"
+            >
+              <div className="px-4 py-4 flex flex-col gap-3">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-ocid={`nav.mobile.${link.label.toLowerCase()}.link`}
+                    className="text-base font-heading font-semibold text-foreground hover:text-flame py-2 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+                <a
+                  href="tel:+918208118143"
+                  data-ocid="nav.mobile.call.primary_button"
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-flame text-primary-foreground font-heading font-bold mt-2"
+                >
+                  <Phone className="w-4 h-4" /> Call Now
+                </a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </header>
 
-      {/* HERO SECTION */}
+      {/* ── HERO ────────────────────────────────────────────────── */}
       <section
-        id="home"
-        className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden"
+        id="hero"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.32 0.12 45 / 0.5), transparent 70%), linear-gradient(to bottom, oklch(0.10 0.01 30), oklch(0.12 0.005 20) 60%, oklch(0.10 0.01 30))",
+        }}
       >
-        {/* Background image */}
+        {/* Decorative glow */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
           style={{
-            backgroundImage:
-              "url('/assets/generated/hero-momos.dim_1200x600.jpg')",
+            background:
+              "radial-gradient(circle 600px at 20% 80%, oklch(0.60 0.18 40 / 0.08), transparent), radial-gradient(circle 400px at 80% 20%, oklch(0.72 0.16 60 / 0.07), transparent)",
           }}
         />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        {/* Radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.65_0.19_35/0.15)_0%,transparent_65%)]" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 max-w-4xl mx-auto"
-        >
-          <Badge className="mb-6 bg-primary/20 text-accent border-primary/40 font-semibold tracking-wide uppercase text-xs">
-            ⭐ 4.5/5 · Old Jalna's #1 Momo Cafe
-          </Badge>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <Badge className="mb-6 px-4 py-1.5 text-sm font-heading font-semibold bg-flame/20 text-amber border-flame/40 border">
+              🥟 Old Jalna's Street Food Gem
+            </Badge>
 
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-7xl leading-tight mb-4">
-            <span className="text-gradient-fire">Momo Ghar</span>
-            <br />
-            <span className="text-foreground">&amp; Wrap</span>
-          </h1>
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
+              <span className="text-foreground">Mumbai's Best</span>
+              <br />
+              <span
+                style={{
+                  background:
+                    "linear-gradient(90deg, oklch(0.68 0.19 45), oklch(0.80 0.18 60), oklch(0.68 0.19 45))",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Momos Are Now
+              </span>
+              <br />
+              <span className="text-foreground">in Jalna!</span>
+            </h1>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-accent font-semibold mb-4">
-            Jalna's Favorite Spot for Delicious Momos &amp; Wraps
-          </p>
+            <p className="font-heading text-xl sm:text-2xl font-semibold text-amber mb-4">
+              Authentic flavors. Bold spices. Unbeatable taste.
+            </p>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+              From tandoori to schezwan, experience momos like never before.
+            </p>
 
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-            Experience the perfect blend of flavor, freshness, and street-style
-            fast food at Momo Ghar and Wrap. From sizzling tandoori momos to
-            mouth-watering wraps and loaded fries — every bite is crafted to
-            satisfy your cravings.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base shadow-glow-sm w-full sm:w-auto"
-              asChild
-            >
-              <a href={`tel:${PHONE}`} data-ocid="hero.call_button">
-                <Phone size={18} className="mr-2" />
-                Call Now
-              </a>
-            </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-green-600 text-green-400 hover:bg-green-600/20 font-bold text-base w-full sm:w-auto"
-              asChild
-            >
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href={WHATSAPP_URL}
+                href="tel:+918208118143"
+                data-ocid="hero.call.primary_button"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-flame text-primary-foreground font-heading font-bold text-lg hover:bg-flame-dark transition-all duration-200 shadow-flame hover:shadow-flame-lg hover:scale-105"
+              >
+                <Phone className="w-5 h-5" />
+                Call to Order
+              </a>
+              <a
+                href={GOOGLE_MAPS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-ocid="hero.whatsapp_button"
+                data-ocid="hero.directions.secondary_button"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-flame text-flame font-heading font-bold text-lg hover:bg-flame/10 transition-all duration-200 hover:scale-105"
               >
-                <MessageCircle size={18} className="mr-2" />
-                Order on WhatsApp
-              </a>
-            </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-border text-foreground hover:bg-secondary font-bold text-base w-full sm:w-auto"
-              asChild
-            >
-              <a
-                href={MAPS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-ocid="hero.directions_button"
-              >
-                <MapPin size={18} className="mr-2" />
+                <MapPin className="w-5 h-5" />
                 Get Directions
               </a>
-            </Button>
-          </div>
-        </motion.div>
+            </div>
+          </motion.div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground"
-        >
-          <ChevronDown size={28} />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 0.6, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
+            className="mt-16"
+          >
+            <ChevronDown className="w-8 h-8 mx-auto text-muted-foreground animate-bounce" />
+          </motion.div>
+        </div>
       </section>
 
-      {/* ABOUT SECTION */}
-      <section
-        id="about"
-        className="py-20 md:py-28 px-4 bg-card relative overflow-hidden"
-      >
-        <div className="absolute top-0 left-0 right-0 section-divider" />
-        <div className="absolute -right-40 top-10 w-80 h-80 rounded-full bg-primary/5 blur-3xl" />
-
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            >
-              <Badge className="mb-4 bg-accent/15 text-accent border-accent/30 text-xs uppercase tracking-widest">
+      {/* ── ABOUT ───────────────────────────────────────────────── */}
+      <section id="about" className="py-24 relative">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 40% at 50% 50%, oklch(0.20 0.04 40 / 0.25), transparent)",
+          }}
+        />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid md:grid-cols-2 gap-16 items-center"
+          >
+            <motion.div variants={fadeUp}>
+              <span className="inline-block text-sm font-heading font-bold text-flame uppercase tracking-widest mb-4">
                 Our Story
-              </Badge>
-              <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-foreground mb-6 leading-tight">
-                Where Flavor Meets
-                <span className="text-gradient-fire"> Street-Food Passion</span>
+              </span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground mb-6 leading-tight">
+                Crafted with
+                <span className="text-flame"> Passion</span>,
+                <br />
+                Served with Love
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Located in the heart of Old Jalna, Momo Ghar And Wrap is a cozy
-                fast-food cafe known for its unique momo varieties, delicious
-                wraps, and flavorful snacks.
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Born from a love of authentic street food, Momo Ghar And Wrap
+                brings you the finest momos and wraps crafted with fresh
+                ingredients and bold spices. Whether you're craving the smoky
+                char of tandoori or the fiery kick of schezwan, we've got
+                something for every palate.
               </p>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Our mission is simple — serve freshly prepared food with
-                authentic taste and great quality. Whether you're visiting with
-                friends, grabbing a quick bite, or enjoying evening snacks, our
-                cafe offers the perfect place to relax and enjoy amazing food.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                From classic momos to creative rolls and tasty beverages, every
-                dish is prepared with care and quality ingredients that you can
-                taste in every bite.
+              <p className="text-muted-foreground text-lg leading-relaxed mt-4 font-semibold text-foreground/80">
+                Come hungry, leave happy.
               </p>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="grid grid-cols-2 gap-4"
-            >
+            <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
               {[
-                {
-                  icon: "🏠",
-                  label: "Cozy Ambience",
-                  sub: "Perfect for hangouts",
-                },
-                {
-                  icon: "⚡",
-                  label: "Quick Service",
-                  sub: "Fast & fresh every time",
-                },
-                { icon: "💰", label: "Affordable", sub: "Value for money" },
-                { icon: "👨‍🍳", label: "Made Fresh", sub: "Prepared to order" },
-              ].map((item) => (
+                { num: "4.5★", label: "Google Rating" },
+                { num: "8+", label: "Menu Items" },
+                { num: "Daily", label: "Fresh Prep" },
+                { num: "10am", label: "Opens Early" },
+              ].map((stat) => (
                 <div
-                  key={item.label}
-                  className="bg-background rounded-xl p-5 border border-border hover:border-primary/50 transition-colors group"
+                  key={stat.label}
+                  className="gradient-dark-card rounded-2xl p-6 border border-border hover:border-flame/50 transition-colors duration-300 text-center"
                 >
-                  <div className="text-3xl mb-2">{item.icon}</div>
-                  <div className="font-display font-semibold text-foreground text-sm group-hover:text-primary transition-colors">
-                    {item.label}
+                  <div className="font-display text-3xl font-black text-flame mb-1">
+                    {stat.num}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {item.sub}
+                  <div className="text-sm font-heading text-muted-foreground">
+                    {stat.label}
                   </div>
                 </div>
               ))}
             </motion.div>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 section-divider" />
-      </section>
-
-      {/* MENU SECTION */}
-      <section id="menu" className="py-20 md:py-28 px-4 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <Badge className="mb-4 bg-primary/20 text-accent border-primary/40 text-xs uppercase tracking-widest">
-              Menu
-            </Badge>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-3">
-              Customer <span className="text-gradient-fire">Favorites</span>
-            </h2>
-            <p className="text-muted-foreground text-base">
-              Fresh &bull; Flavorful &bull; Made to Order
-            </p>
           </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {menuItems.map((item, i) => (
-              <motion.div
-                key={item.name}
-                data-ocid={`menu.item.${i + 1}`}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (i % 4) * 0.1 }}
-                whileHover={{ y: -4 }}
-                className="bg-card border border-border rounded-2xl overflow-hidden group cursor-default hover:border-primary/50 transition-colors"
-              >
-                {/* Image or emoji banner */}
-                <div className="relative h-40 overflow-hidden bg-secondary flex items-center justify-center">
-                  {item.img ? (
-                    <img
-                      src={item.img}
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <span className="text-6xl">{item.emoji}</span>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
-                  <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground border-0 text-xs">
-                    {item.tag}
-                  </Badge>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-display font-bold text-foreground mb-1">
-                    {item.name}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-snug">
-                    {item.desc}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section
-        id="why"
-        className="py-20 md:py-28 px-4 bg-card relative overflow-hidden"
-      >
-        <div className="absolute top-0 left-0 right-0 section-divider" />
-        <div className="absolute -left-40 bottom-10 w-96 h-96 rounded-full bg-accent/5 blur-3xl" />
-
-        <div className="max-w-5xl mx-auto">
+      {/* ── MENU ────────────────────────────────────────────────── */}
+      <section id="menu" className="py-24 bg-card/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
           >
-            <Badge className="mb-4 bg-accent/15 text-accent border-accent/30 text-xs uppercase tracking-widest">
-              Why Us
-            </Badge>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground">
-              Why Food Lovers{" "}
-              <span className="text-gradient-fire">Choose Us</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((feat, i) => (
-              <motion.div
-                key={feat}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex items-center gap-4 bg-background border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group"
-              >
-                <CheckCircle2
-                  size={22}
-                  className="shrink-0 text-primary group-hover:scale-110 transition-transform"
-                />
-                <span className="font-semibold text-foreground">{feat}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 section-divider" />
-      </section>
-
-      {/* REVIEWS SECTION */}
-      <section id="reviews" className="py-20 md:py-28 px-4 bg-background">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <Badge className="mb-4 bg-primary/20 text-accent border-primary/40 text-xs uppercase tracking-widest">
-              Reviews
-            </Badge>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground mb-4">
-              What Our Customers <span className="text-gradient-fire">Say</span>
-            </h2>
-            <div className="flex items-center gap-3 justify-center">
-              <StarRating rating={4.5} size={20} />
-              <span className="font-display font-bold text-2xl text-foreground">
-                4.5
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="inline-block text-sm font-heading font-bold text-flame uppercase tracking-widest mb-4">
+                What We Serve
               </span>
-              <span className="text-muted-foreground">
-                / 5 &bull; Based on 7 ratings
-              </span>
-            </div>
-          </motion.div>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground">
+                Our Popular <span className="text-flame">Dishes</span>
+              </h2>
+            </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reviews.map((review, i) => (
-              <motion.div
-                key={review.name}
-                data-ocid={`reviews.item.${i + 1}`}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12 }}
-                className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 hover:border-primary/50 transition-colors"
-              >
-                <StarRating rating={review.rating} />
-                <p className="text-foreground/90 leading-relaxed text-sm flex-1">
-                  &#8220;{review.text}&#8221;
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="font-display font-bold text-foreground text-sm">
-                    {review.name}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {review.date}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* LOCATION & CONTACT */}
-      <section
-        id="contact"
-        className="py-20 md:py-28 px-4 bg-card relative overflow-hidden"
-      >
-        <div className="absolute top-0 left-0 right-0 section-divider" />
-        <div className="absolute right-0 top-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
-
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <Badge className="mb-4 bg-accent/15 text-accent border-accent/30 text-xs uppercase tracking-widest">
-              Find Us
-            </Badge>
-            <h2 className="font-display font-bold text-3xl md:text-5xl text-foreground">
-              Location &amp; <span className="text-gradient-fire">Contact</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Info cards */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-5"
+              variants={stagger}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             >
-              <div className="bg-background border border-border rounded-xl p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                  <MapPin size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="font-display font-bold text-foreground mb-1">
-                    Address
-                  </div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
-                    Tirupati Plaza, Deepak Hospital Road
-                    <br />
-                    Gandhi Chaman, Old Jalna
-                    <br />
-                    Maharashtra 431213
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-background border border-border rounded-xl p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                  <Phone size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="font-display font-bold text-foreground mb-1">
-                    Phone
-                  </div>
-                  <a
-                    href={`tel:${PHONE}`}
-                    className="text-primary font-semibold hover:text-accent transition-colors"
-                  >
-                    +91 82081 18143
-                  </a>
-                </div>
-              </div>
-
-              <div className="bg-background border border-border rounded-xl p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                  <Clock size={18} className="text-primary" />
-                </div>
-                <div>
-                  <div className="font-display font-bold text-foreground mb-1">
-                    Opening Hours
-                  </div>
-                  <div className="text-muted-foreground text-sm">
-                    Everyday:{" "}
-                    <span className="text-foreground font-semibold">
-                      11:00 AM – 9:00 PM
+              {menuItems.map((item, i) => (
+                <motion.div
+                  key={item.name}
+                  variants={fadeUp}
+                  data-ocid={`menu.item.${i + 1}`}
+                  className="group relative rounded-2xl overflow-hidden border border-border hover:border-flame/60 transition-all duration-300 hover:-translate-y-1 cursor-default"
+                  style={{ background: "oklch(0.16 0.005 30)" }}
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div
+                        className={`w-full h-full bg-gradient-to-br ${item.gradient} flex items-center justify-center`}
+                      >
+                        <span className="text-6xl filter drop-shadow-lg">
+                          {item.emoji}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
+                    <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-sm text-xs font-heading font-bold text-flame px-2 py-1 rounded-full border border-flame/30">
+                      {item.tag}
                     </span>
                   </div>
-                </div>
-              </div>
 
-              <div className="bg-background border border-border rounded-xl p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                  <Star size={18} className="text-accent fill-accent" />
-                </div>
-                <div>
-                  <div className="font-display font-bold text-foreground mb-1">
-                    Rating
+                  <div className="p-4">
+                    <h3 className="font-heading font-bold text-foreground text-base mb-1">
+                      {item.name}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {item.desc}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <StarRating rating={4.5} size={14} />
-                    <span className="text-sm text-muted-foreground">
-                      4.5 / 5 · 7 reviews
-                    </span>
-                  </div>
-                </div>
-              </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
-              <div className="flex gap-3 pt-2">
-                <Button
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
-                  asChild
+      {/* ── WHY CHOOSE US ───────────────────────────────────────── */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+          >
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="inline-block text-sm font-heading font-bold text-flame uppercase tracking-widest mb-4">
+                Why Us?
+              </span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground">
+                Why Choose <span className="text-flame">Us</span>
+              </h2>
+            </motion.div>
+
+            <motion.div
+              variants={stagger}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
+              {features.map((feat, i) => (
+                <motion.div
+                  key={feat.title}
+                  variants={fadeUp}
+                  data-ocid={`features.item.${i + 1}`}
+                  className="gradient-dark-card rounded-2xl p-8 border border-border hover:border-flame/50 transition-all duration-300 hover:-translate-y-1 text-center"
                 >
-                  <a href={`tel:${PHONE}`} data-ocid="contact.call_button">
-                    <Phone size={16} className="mr-2" />
-                    Call Now
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 border-border hover:bg-secondary font-bold"
-                  asChild
-                >
-                  <a
-                    href={MAPS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-ocid="contact.directions_button"
+                  <div
+                    className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-5 ${feat.color}`}
+                    style={{ background: "oklch(0.20 0.01 30)" }}
                   >
-                    <MapPin size={16} className="mr-2" />
-                    Directions
-                  </a>
-                </Button>
+                    <feat.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-heading font-bold text-foreground text-lg mb-2">
+                    {feat.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {feat.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── REVIEWS ─────────────────────────────────────────────── */}
+      <section id="reviews" className="py-24 bg-card/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+          >
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="inline-block text-sm font-heading font-bold text-flame uppercase tracking-widest mb-4">
+                Testimonials
+              </span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground mb-4">
+                What Our Customers <span className="text-flame">Say</span>
+              </h2>
+              <div className="inline-flex items-center gap-3 bg-card border border-border rounded-full px-6 py-3 mt-4">
+                <div className="flex gap-0.5">
+                  {STAR_KEYS.map((k, i) => (
+                    <Star
+                      key={k}
+                      className={`w-5 h-5 ${
+                        i < 4
+                          ? "fill-amber-400 text-amber-400"
+                          : "fill-amber-400/50 text-amber-400/50"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="font-display font-black text-xl text-foreground">
+                  4.5
+                </span>
+                <span className="text-muted-foreground text-sm font-heading">
+                  /5 · 7 reviews
+                </span>
               </div>
             </motion.div>
 
-            {/* Map embed */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-2xl overflow-hidden border border-border h-[420px] relative bg-secondary"
+              variants={stagger}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              <iframe
-                title="Momo Ghar And Wrap Location"
-                src="https://maps.google.com/maps?q=Old+Jalna+Maharashtra+431213&output=embed&z=15"
-                width="100%"
-                height="100%"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
-              />
-              <div
-                className="absolute bottom-3 right-3"
-                data-ocid="contact.map_marker"
-              >
+              {reviews.map((review, i) => (
+                <motion.div
+                  key={review.name}
+                  variants={fadeUp}
+                  data-ocid={`reviews.item.${i + 1}`}
+                  className="gradient-dark-card rounded-2xl p-8 border border-border hover:border-flame/40 transition-all duration-300"
+                >
+                  <Quote className="w-8 h-8 text-flame/50 mb-4" />
+                  <p className="text-foreground/90 text-base leading-relaxed mb-6 font-body">
+                    "{review.text}"
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full gradient-flame flex items-center justify-center text-primary-foreground font-heading font-black text-sm shrink-0">
+                      {review.initials}
+                    </div>
+                    <div>
+                      <div className="font-heading font-bold text-foreground text-sm">
+                        {review.name}
+                      </div>
+                      <div className="text-muted-foreground text-xs">
+                        {review.role}
+                      </div>
+                    </div>
+                    <div className="ml-auto flex gap-0.5">
+                      {STAR_KEYS.slice(0, review.rating).map((k) => (
+                        <Star
+                          key={k}
+                          className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── LOCATION & CONTACT ──────────────────────────────────── */}
+      <section id="contact" className="py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-80px" }}
+          >
+            <motion.div variants={fadeUp} className="text-center mb-16">
+              <span className="inline-block text-sm font-heading font-bold text-flame uppercase tracking-widest mb-4">
+                Find Us
+              </span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground">
+                Location &amp; <span className="text-flame">Contact</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-10 items-start">
+              {/* Contact info */}
+              <motion.div variants={fadeUp} className="space-y-6">
+                <div className="gradient-dark-card rounded-2xl p-8 border border-border space-y-6">
+                  <div className="flex gap-4">
+                    <div className="shrink-0 w-12 h-12 rounded-xl bg-flame/15 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-flame" />
+                    </div>
+                    <div>
+                      <div className="font-heading font-bold text-foreground mb-1">
+                        Address
+                      </div>
+                      <div className="text-muted-foreground text-sm leading-relaxed">
+                        Tirupati Plaza, Deepak Hospital Road,
+                        <br />
+                        Gandhi Chaman, Old Jalna,
+                        <br />
+                        Maharashtra 431213
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="shrink-0 w-12 h-12 rounded-xl bg-flame/15 flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-flame" />
+                    </div>
+                    <div>
+                      <div className="font-heading font-bold text-foreground mb-1">
+                        Phone
+                      </div>
+                      <a
+                        href="tel:+918208118143"
+                        data-ocid="contact.call.button"
+                        className="text-flame font-heading font-semibold hover:text-amber transition-colors"
+                      >
+                        +91 82081 18143
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="shrink-0 w-12 h-12 rounded-xl bg-flame/15 flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-flame" />
+                    </div>
+                    <div>
+                      <div className="font-heading font-bold text-foreground mb-1">
+                        Hours
+                      </div>
+                      <div className="text-muted-foreground text-sm">
+                        11:00 AM – 9:00 PM
+                      </div>
+                      <div className="text-muted-foreground text-xs mt-0.5">
+                        Open daily
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <a
-                  href={MAPS_URL}
+                  href={GOOGLE_MAPS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-primary/90 transition-colors"
+                  data-ocid="contact.directions.button"
+                  className="flex items-center justify-center gap-2 w-full px-6 py-4 rounded-xl border-2 border-flame text-flame font-heading font-bold hover:bg-flame/10 transition-all duration-200"
                 >
-                  Open in Maps
+                  <MapPin className="w-5 h-5" />
+                  Get Directions on Google Maps
+                </a>
+              </motion.div>
+
+              {/* Map */}
+              <motion.div
+                variants={fadeUp}
+                className="rounded-2xl overflow-hidden border border-border shadow-lg h-80 md:h-full min-h-72"
+                data-ocid="contact.map_marker"
+              >
+                <iframe
+                  title="Momo Ghar And Wrap Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3757.123!2d75.884!3d19.834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bda6f1234567890%3A0xabcdef1234567890!2sTirupati%20Plaza%2C%20Deepak%20Hospital%20Road%2C%20Gandhi%20Chaman%2C%20Old%20Jalna%2C%20Maharashtra%20431213!5e0!3m2!1sen!2sin!4v1234567890"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, minHeight: "288px" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ───────────────────────────────────────────── */}
+      <section
+        className="py-28 relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.22 0.06 40), oklch(0.18 0.05 35), oklch(0.20 0.07 50))",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 80% at 50% 50%, oklch(0.68 0.19 45 / 0.08), transparent)",
+          }}
+        />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <motion.div variants={fadeUp}>
+              <span className="text-4xl mb-4 block">🥟</span>
+              <h2 className="font-display text-4xl sm:text-6xl font-black text-foreground mb-4">
+                Ready to Taste the
+                <span className="text-flame"> Difference?</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-10">
+                Visit us today or call ahead for your order.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="tel:+918208118143"
+                  data-ocid="cta.call.primary_button"
+                  className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full bg-flame text-primary-foreground font-heading font-black text-lg hover:bg-flame-dark transition-all duration-200 shadow-flame hover:shadow-flame-lg hover:scale-105"
+                >
+                  <Phone className="w-5 h-5" />
+                  Call Now
+                </a>
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-ocid="cta.directions.secondary_button"
+                  className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full border-2 border-flame text-flame font-heading font-black text-lg hover:bg-flame/10 transition-all duration-200 hover:scale-105"
+                >
+                  <MapPin className="w-5 h-5" />
+                  Get Directions
                 </a>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 section-divider" />
       </section>
 
-      {/* FINAL CTA */}
-      <section className="py-24 md:py-32 px-4 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.65_0.19_35/0.12)_0%,transparent_65%)]" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="max-w-3xl mx-auto text-center relative z-10"
-        >
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-6xl text-foreground mb-4 leading-tight">
-            Craving
-            <span className="text-gradient-fire"> Delicious Momos?</span>
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg mb-10 leading-relaxed">
-            Visit Momo Ghar And Wrap today and enjoy Jalna's most loved momos,
-            wraps, and snacks. We're open every day from 11 AM to 9 PM. Come
-            hungry, leave happy.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base shadow-glow-md w-full sm:w-auto"
-              asChild
-            >
-              <a href={`tel:${PHONE}`} data-ocid="cta.call_button">
-                <Phone size={18} className="mr-2" />
-                Call Now
-              </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-border hover:bg-secondary font-bold text-base w-full sm:w-auto"
-              asChild
-            >
-              <a
-                href={MAPS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-ocid="cta.directions_button"
-              >
-                <MapPin size={18} className="mr-2" />
-                Get Directions
-              </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-green-600 text-green-400 hover:bg-green-600/20 font-bold text-base w-full sm:w-auto"
-              asChild
-            >
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-ocid="cta.whatsapp_button"
-              >
-                <MessageCircle size={18} className="mr-2" />
-                Order on WhatsApp
-              </a>
-            </Button>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="bg-card border-t border-border py-10 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      {/* ── FOOTER ──────────────────────────────────────────────── */}
+      <footer className="py-12 border-t border-border bg-background">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
-              <h3 className="font-display font-bold text-xl text-foreground mb-2">
-                <span className="text-gradient-fire">Momo Ghar</span> &amp; Wrap
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                Jalna's favorite spot for momos, wraps, and fast food.
+              <img
+                src="/assets/generated/logo-transparent.dim_300x100.png"
+                alt="Momo Ghar And Wrap"
+                className="h-10 w-auto object-contain mb-3"
+              />
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Authentic street food momos &amp; wraps in the heart of Old
+                Jalna.
               </p>
             </div>
+
             <div>
-              <h4 className="font-display font-semibold text-foreground mb-3 text-sm uppercase tracking-wider">
-                Visit Us
+              <h4 className="font-heading font-bold text-foreground mb-4 uppercase tracking-wider text-sm">
+                Contact
               </h4>
-              <div className="text-muted-foreground text-sm space-y-1">
-                <p>Tirupati Plaza, Deepak Hospital Road</p>
-                <p>Gandhi Chaman, Old Jalna</p>
-                <p>Maharashtra 431213</p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-display font-semibold text-foreground mb-3 text-sm uppercase tracking-wider">
-                Contact &amp; Hours
-              </h4>
-              <div className="text-muted-foreground text-sm space-y-1">
-                <p>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex gap-2 items-start">
+                  <MapPin className="w-4 h-4 text-flame shrink-0 mt-0.5" />
+                  <span>
+                    Tirupati Plaza, Deepak Hospital Road, Gandhi Chaman, Old
+                    Jalna, MH 431213
+                  </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Phone className="w-4 h-4 text-flame shrink-0" />
                   <a
-                    href={`tel:${PHONE}`}
-                    className="hover:text-primary transition-colors"
+                    href="tel:+918208118143"
+                    className="hover:text-flame transition-colors"
                   >
                     +91 82081 18143
                   </a>
-                </p>
-                <p>Everyday: 11:00 AM – 9:00 PM</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Clock className="w-4 h-4 text-flame shrink-0" />
+                  <span>11:00 AM – 9:00 PM, Daily</span>
+                </div>
               </div>
             </div>
+
+            <div>
+              <h4 className="font-heading font-bold text-foreground mb-4 uppercase tracking-wider text-sm">
+                Quick Links
+              </h4>
+              <ul className="space-y-2">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-flame transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-            <p>© {year} Momo Ghar And Wrap. All rights reserved.</p>
-            <p>
+
+          <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-muted-foreground text-sm">
+              © {new Date().getFullYear()} Momo Ghar And Wrap. All rights
+              reserved.
+            </p>
+            <p className="text-muted-foreground text-sm">
               Built with ❤️ using{" "}
               <a
-                href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${hostname}`}
+                href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
+                className="text-flame hover:text-amber transition-colors"
               >
                 caffeine.ai
               </a>

@@ -1,31 +1,29 @@
 # Momo Ghar And Wrap
 
 ## Current State
-New project, no existing code.
+Frontend scaffold exists (React + Tailwind + shadcn/ui) but no App.tsx or backend code. Build failed previously before any app logic was written.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Full one-page restaurant website for Momo Ghar And Wrap
-- Hero section with headline, tagline, description, and CTA buttons (Call Now, WhatsApp, Directions)
-- About section with restaurant story
-- Popular Menu section with dish highlights
-- Why Choose Us section with key USPs
-- Customer Reviews section with ratings
-- Location & Contact section with address, phone, hours
+- One-page restaurant website with dark theme and warm color palette
+- Hero section: headline, tagline, CTAs (Call Now, Get Directions)
+- About section: mission and ambiance story
+- Popular Menu section: 8 menu items with descriptions
+- Why Choose Us section: key advantages
+- Customer Reviews section: testimonials and rating
+- Location & Contact section: address, phone, hours
 - Final CTA section
-- Dark theme with warm accent colors and street-food vibe
-- Mobile-first responsive design
 
 ### Modify
-- N/A
+- Nothing (new build)
 
 ### Remove
-- N/A
+- Nothing
 
 ## Implementation Plan
-1. Generate food/restaurant themed hero image
-2. Build single-page React frontend with all 7 sections
-3. Add smooth scroll navigation
-4. Integrate WhatsApp and phone CTAs
-5. Google Maps directions link
+- Write App.tsx as a single-page component with all sections
+- Use warm dark theme (deep charcoal background, orange/red accents)
+- All content hardcoded from provided restaurant details
+- CTAs link to tel: and Google Maps
+- No backend needed (static informational site)
